@@ -1,0 +1,103 @@
+<html>
+<head>
+	<title>nightOwl</title>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet"></link>
+<link href="https://fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet"></link>
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"></link>
+<style type="text/css">
+.container {
+  width: 100%;
+}
+
+#mainPage {
+  background-color: #66B8C0;
+}
+
+.jumbotron {
+  background-color: #E37222!important;
+  color: white;
+  text-align: center;
+  width: 100%;
+}
+
+.isCursive {
+  font-family: 'Lobster', cursive;
+}
+
+#plusText {
+  display:none;
+}
+
+#adder:hover #plusText {
+  display:block;
+} 
+
+input {
+  margin-top: 50px;
+  margin-bottom: 30px;
+  height: 30px;
+  border-radius: 4px;
+}
+
+.notebookTitle {
+  background-color: #E0E0DD;
+  color: #07889D;
+  border: none;
+}
+
+.saveNotes {
+  color:white;
+  background-color: #07889D;
+  border: none;
+  font-family: 'Fjalla One', sans-serif;
+  font-size: 30px;
+  height: 40px;
+  margin-top: 0px;
+}
+
+input {
+  background-color: #E0E0DD;
+  color: #07889D;
+  font-weight:bold;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+}
+
+.content {
+  height: 500px;
+  border-radius: 10px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container" id="mainPage">
+  <div class="appTitle jumbotron">
+    <h1 id="nightOwl" class="isCursive">nightOwl</h1>
+    <h3 id="subtitle" class="isCursive">For those late night flights</h3>
+  </div> <!--end of appTitle div !-->
+   
+  <form class="notebook" action="" method="POST" enctype="multipart/form-data">
+  <fieldset>
+    <input type="submit" id="search" class="saveNotes col-md-6 col-xs-4 col-md-offset-3 col-xs-offset-4" value="Search" />
+    <input type="text" class="col-md-12 col-xs-12 content" id="finder" name="findPlace">
+        <%= looked %>
+    </textarea>
+  </fieldset>
+  </form> <!--end of notebook div !-->
+</div>
+
+<!--end of HTML content, beginning of JavaScript !-->
+
+</body>
+</html>
