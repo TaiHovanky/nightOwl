@@ -41,13 +41,6 @@
   display:block;
 } 
 
-input {
-  margin-top: 50px;
-  margin-bottom: 30px;
-  height: 30px;
-  border-radius: 4px;
-}
-
 .notebookTitle {
   background-color: #E0E0DD;
   color: #07889D;
@@ -65,6 +58,10 @@ input {
 }
 
 input {
+  margin-top: 50px;
+  margin-bottom: 30px;
+  height: 30px;
+  border-radius: 4px;
   background-color: #E0E0DD;
   color: #07889D;
   font-weight:bold;
@@ -75,6 +72,15 @@ input {
 .content {
   border-radius: 10px;
 }
+
+ul {
+  list-style-type: none;
+}
+
+.barName {
+  margin-top: 40px;
+}
+
 </style>
 
 </head>
@@ -99,7 +105,13 @@ input {
             <!--<li> {{name}}</li>
             <li> {{rating}}</li>
             <li> {{snippet}}</li> !-->
-              <li>{{this}}</li>
+            <li>
+              
+              <a href={{this.URL}} target="_blank"><h2 class="barName">{{this.Name}}</h2></a>
+              <h4 class="barRating">Rating: {{this.Rating}} Stars</h4>
+              <h4 class="barSnippet">"{{this.Snippet}}"</h4>
+              <img class="barPic" src={{this.Image}} />
+            </li>
             {{/each}}
       </ul>
   </section>

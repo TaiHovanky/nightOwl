@@ -44,10 +44,12 @@ function yelpReq(loc, res){
         //releventDataArr.length = 0;
         resultObj.businesses.forEach(function(business){
                 var businessObj = {};
+                businessObj.Image = business.image_url;
+                businessObj.URL = business.url;
                 businessObj.Name = business.name;
                 businessObj.Rating = business.rating;
                 businessObj.Snippet = business.snippet_text;
-                businessObj = JSON.stringify(businessObj);
+                //businessObj = JSON.stringify(businessObj);
                 releventDataArr.push(businessObj);
                 //res.render('searchRes', {
                  //   name: business.name,
@@ -56,7 +58,7 @@ function yelpReq(loc, res){
                 //});
         });
         //res.write(releventDataArr);
-        console.log(releventDataArr);
+        //console.log(releventDataArr);
         //res.render('index', {releventDataArr: releventDataArr});
         
         res.render('index', {releventDataArr: releventDataArr});
