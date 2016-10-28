@@ -8,17 +8,22 @@ var nonce = require('nonce');
 var releventDataArr = [];
 var express = require('express');
 var app = express();
+var exphbs = require('express-handlebars'); 
+app.engine('handlebars', exphbs()); 
+//{defaultLayout: 'index'}
+app.set('view engine', 'handlebars');
 var url = "https://api.yelp.com/v2/search/?"; // yelp api website
 var place = "";
-app.set('view engine', 'ejs');
+//app.set('view engine', 'ejs');
 var fields = {};
 
-function yelpReq(loc){
+function yelpReq(loc, res){
     var httpMethod = 'GET';
     var parameters = {
         location: loc,
         sort: '2',
-        limit: '5',
+        limit: '10',
+        category_filter: 'nightlife',
         oauth_consumer_key: "G9M1PQJcKx5l0GaRq8KtPA",
         oauth_token: "OezaVHj9v7HLVAMRJZDGonSCX_pq_UuL",
         oauth_nonce: nonce(),
@@ -33,14 +38,37 @@ function yelpReq(loc){
     parameters.oauth_signature = signature;
     var paramURL = qs.stringify(parameters);
     var apiURL = url + paramURL;
-    return apiURL;
-    //https.request(apiURL, function(res){
-    //
-    //});
+
+    request(apiURL, function(err, response, body){
+        var resultObj = JSON.parse(body);
+        //releventDataArr.length = 0;
+        resultObj.businesses.forEach(function(business){
+                var businessObj = {};
+                businessObj.Name = business.name;
+                businessObj.Rating = business.rating;
+                businessObj.Snippet = business.snippet_text;
+                businessObj = JSON.stringify(businessObj);
+                releventDataArr.push(businessObj);
+                //res.render('searchRes', {
+                 //   name: business.name,
+                 //   rating: business.rating,
+                 //   snippet: business.snippet_text    
+                //});
+        });
+        //res.write(releventDataArr);
+        console.log(releventDataArr);
+        //res.render('index', {releventDataArr: releventDataArr});
+        
+        res.render('index', {releventDataArr: releventDataArr});
+        //res.end();
+        //releventDataStr = JSON.stringify(releventDataArr);
+        //res.write(releventDataStr);
+    });
+    
 }
 
 app.get('/', function (req, res) {
-    res.render('index', {looked:""});
+    res.render('index');
 });
 
 app.post('/', function (req, res) {
@@ -57,20 +85,9 @@ app.post('/', function (req, res) {
 app.get('/place', function (req, res) {
     
 
-    var myURL = yelpReq(place);
-    request.get(myURL)
-    .on('response', function(response){
-        var resultObj = JSON.parse(response);
-            
-        resultObj.businesses.forEach(function(business){
-                var businessObj = {};
-                businessObj.Name = business.name;
-                businessObj.Rating = business.rating;
-                businessObj.Snippet = business.snippet_text;
-                releventDataArr.push(businessObj);
-        });
-        res.write(releventDataArr);
-    }).pipe(res);
+    yelpReq(place, res);
+    
+    //res.render('index', {looked: place});
             
             
    

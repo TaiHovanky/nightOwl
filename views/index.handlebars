@@ -95,13 +95,15 @@ input {
   </form> <!--end of notebook div !-->
   <section>
       <ul>
-          
-            <li> <%= name %></li>
-            <li> <%= rating %></li>
-            <li> <%= snippet %></li>
-        
+        {{#each releventDataArr}}
+            <!--<li> {{name}}</li>
+            <li> {{rating}}</li>
+            <li> {{snippet}}</li> !-->
+              <li>{{this}}</li>
+            {{/each}}
       </ul>
   </section>
+
 </div>
 
 <!--end of HTML content, beginning of JavaScript !-->
