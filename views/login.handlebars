@@ -55,8 +55,12 @@
   margin-top: 0px;
 }
 
+label {
+    color: white;
+}
+
 input {
-  margin-top: 50px;
+  margin-top: 40px;
   margin-bottom: 30px;
   height: 30px;
   border-radius: 4px;
@@ -65,40 +69,6 @@ input {
   font-weight:bold;
   font-family: 'Roboto', sans-serif;
   font-size: 18px;
-}
-
-ul {
-  list-style-type: none;
-  width: 100%;
-}
-
-a {
-  color: #F8EDE7;
-}
-
-li {
-  background-color: #93628F;
-  color: #F8EDE7;
-  border-radius: 10px;
-  padding: 0px 0 20px 20px;
-  margin-bottom: 30px;
-  
-}
-
-
-.barPic {
-  display: inline-block;
-  /*margin-bottom: 15px;*/
-  margin-top: 20px;
-  margin-left: 15px;
-  position: relative;
-}
-
-.resultText {
-  display: inline-block;
-  margin-left: 20px;
-  /*margin-top: 25px;*/
-  position:absolute;
 }
 
 </style>
@@ -111,29 +81,22 @@ li {
     <h1 id="nightOwl" class="isCursive">nightOwl</h1>
     <h3 id="subtitle" class="isCursive">For those late night flights</h3>
   </div> <!--end of appTitle div !-->
-   <a href="login"><button class='btn col-md-4 col-md-offset-4'>Login</button></a>
+   
   <form class="notebook" action="" method="POST" enctype="multipart/form-data">
-  <fieldset>  
-    <input type="text" class="col-md-12 col-xs-12 content" id="finder" name="findPlace">    
+  <fieldset>
+      <label>Username:  
+        <input type="text" class="col-md-12 col-xs-12 content" id="finder" name="username">    
+        </input>
+      </label>
+      <label>Password:
+    <input type="text" class="col-md-12 col-xs-12 content" id="finder" name="password">    
     </input>
-    <input type="submit" id="search" class="saveNotes col-md-6 col-xs-4 col-md-offset-3 col-xs-offset-4" value="Search" />
+      </label>
+    <input type="submit" id="search" class="saveNotes col-md-6 col-xs-4 col-md-offset-3 col-xs-offset-4" value="Submit" />
   </fieldset>
   </form> 
   <section>
-      <ul>
-        {{#each releventDataArr}}
-            <li>
-              <div class="row">
-              <img class="barPic" src={{this.Image}} />
-              <div class="resultText">
-              <a href={{this.URL}} target="_blank"><h2 class="barName">{{this.Name}}</h2></a>
-              <h4 class="barRating">Rating: {{this.Rating}} Stars</h4>
-              <h4 class="barSnippet">"{{this.Snippet}}"</h4>
-              </div>
-              </div>
-            </li>
-            {{/each}}
-      </ul>
+      
   </section>
 
 </div>

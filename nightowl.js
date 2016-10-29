@@ -1,10 +1,13 @@
 var request = require('request');
 var formidable = require('formidable');
-var https = require('https');
+var util = require('util');
 var qs = require('query-string');
 var oauthSignature = require('oauth-signature');
 var nonce = require('nonce');
 var releventDataArr = [];
+var mongoose = require('mongoose');
+var config = require('./config');
+var User = require('./models/user');
 var express = require('express');
 var app = express();
 var exphbs = require('express-handlebars'); 
@@ -14,6 +17,10 @@ app.set('view engine', 'handlebars');
 var url = "https://api.yelp.com/v2/search/?"; // yelp api website
 var place = "";
 var fields = {};
+
+mongoose.connect(config.database); //connect to database
+app.set('dinosaur', config.secret); //secret variable
+
 
 function yelpReq(loc, res){
     var httpMethod = 'GET';
@@ -57,6 +64,10 @@ app.get('/', function (req, res) {
     res.render('index');
 });
 
+app.get('/login', function(req, res){
+    res.render('login');
+});
+
 app.post('/', function (req, res) {
     var form = new formidable.IncomingForm();
     form.on('field', function(field, value){
@@ -66,6 +77,16 @@ app.post('/', function (req, res) {
         
     });
     form.parse(req);
+});
+
+var account;
+app.post('/login', function(req, res){
+    var form = new formidable.IncomingForm();
+    //form.encoding = 'utf-8';
+    form.parse(req, function(err, fields){   
+        account = util.inspect(fields);  
+        res.end();
+   });
 });
 
 app.get('/place', function (req, res) {
