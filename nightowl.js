@@ -1,7 +1,6 @@
 var request = require('request');
 var formidable = require('formidable');
 var https = require('https');
-var _ = require('lodash');
 var qs = require('query-string');
 var oauthSignature = require('oauth-signature');
 var nonce = require('nonce');
@@ -14,7 +13,6 @@ app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 var url = "https://api.yelp.com/v2/search/?"; // yelp api website
 var place = "";
-//app.set('view engine', 'ejs');
 var fields = {};
 
 function yelpReq(loc, res){
@@ -41,7 +39,6 @@ function yelpReq(loc, res){
 
     request(apiURL, function(err, response, body){
         var resultObj = JSON.parse(body);
-        //releventDataArr.length = 0;
         resultObj.businesses.forEach(function(business){
                 var businessObj = {};
                 businessObj.Image = business.image_url;
@@ -49,22 +46,9 @@ function yelpReq(loc, res){
                 businessObj.Name = business.name;
                 businessObj.Rating = business.rating;
                 businessObj.Snippet = business.snippet_text;
-                //businessObj = JSON.stringify(businessObj);
                 releventDataArr.push(businessObj);
-                //res.render('searchRes', {
-                 //   name: business.name,
-                 //   rating: business.rating,
-                 //   snippet: business.snippet_text    
-                //});
-        });
-        //res.write(releventDataArr);
-        //console.log(releventDataArr);
-        //res.render('index', {releventDataArr: releventDataArr});
-        
+        });        
         res.render('index', {releventDataArr: releventDataArr});
-        //res.end();
-        //releventDataStr = JSON.stringify(releventDataArr);
-        //res.write(releventDataStr);
     });
     
 }
@@ -85,17 +69,7 @@ app.post('/', function (req, res) {
 });
 
 app.get('/place', function (req, res) {
-    
-
     yelpReq(place, res);
-    
-    //res.render('index', {looked: place});
-            
-            
-   
-    
-    
-    
 });
 
 app.listen(process.env.PORT || 4000);

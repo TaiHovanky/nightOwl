@@ -19,14 +19,15 @@
 }
 
 #mainPage {
-  background-color: #66B8C0;
+  background-color: #4A2849;
 }
 
 .jumbotron {
-  background-color: #E37222!important;
-  color: white;
+  background-color: #6CBBA8!important;
+  color: #4A2849;
   text-align: center;
   width: 100%;
+  margin-top: 15px;
 }
 
 .isCursive {
@@ -41,15 +42,9 @@
   display:block;
 } 
 
-.notebookTitle {
-  background-color: #E0E0DD;
-  color: #07889D;
-  border: none;
-}
-
 .saveNotes {
   color:white;
-  background-color: #07889D;
+  background-color: #93628F;
   border: none;
   font-family: 'Fjalla One', sans-serif;
   font-size: 30px;
@@ -69,12 +64,20 @@ input {
   font-size: 18px;
 }
 
-.content {
-  border-radius: 10px;
-}
-
 ul {
   list-style-type: none;
+}
+
+a {
+  color: #F8EDE7;
+}
+
+li {
+  background-color: #93628F;
+  color: #F8EDE7;
+  border-radius: 10px;
+  padding: 1px 0 20px 20px;
+  margin-bottom: 30px;
 }
 
 .barName {
@@ -98,15 +101,11 @@ ul {
     </input>
     <input type="submit" id="search" class="saveNotes col-md-6 col-xs-4 col-md-offset-3 col-xs-offset-4" value="Search" />
   </fieldset>
-  </form> <!--end of notebook div !-->
+  </form> 
   <section>
       <ul>
         {{#each releventDataArr}}
-            <!--<li> {{name}}</li>
-            <li> {{rating}}</li>
-            <li> {{snippet}}</li> !-->
             <li>
-              
               <a href={{this.URL}} target="_blank"><h2 class="barName">{{this.Name}}</h2></a>
               <h4 class="barRating">Rating: {{this.Rating}} Stars</h4>
               <h4 class="barSnippet">"{{this.Snippet}}"</h4>
@@ -117,8 +116,5 @@ ul {
   </section>
 
 </div>
-
-<!--end of HTML content, beginning of JavaScript !-->
-
 </body>
 </html>
