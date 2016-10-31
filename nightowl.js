@@ -4,6 +4,8 @@ var util = require('util');
 var qs = require('query-string');
 var oauthSignature = require('oauth-signature');
 var nonce = require('nonce');
+var bodyParser = require('body-parser');
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 var releventDataArr = [];
 var mongoose = require('mongoose');
 var config = require('./config');
@@ -92,7 +94,40 @@ app.get('/sampleuser', function(req, res){
         console.log('user saved');
         res.send(jaune.username);
     });
-})
+});
+
+app.get('/newuser', function(req,res){
+    res.render('newuser');
+});
+
+app.post('/newuser', urlencodedParser, function(req, res){
+    User.findOne({
+        username: req.body.username
+    }, function(err, user){
+        if(err) throw err;
+        if(user){
+            res.send("Username is taken. Enter a new one.");
+        } else {
+            User.findOne({
+                password: req.body.password
+            }, function(error, password){
+                if (error) throw error;
+                if(password){
+                    res.send("Provide a different password");
+                } else {
+                    var noob = new User({
+                        username: req.body.username,
+                        password: req.body.password
+                    });
+                    noob.save(function(err){
+                        if(err) throw err;
+                        res.send("Account created!");
+                    });
+                }
+            });
+        }
+    });
+});
 
 app.get('/users', function(req, res) {
   User.find({}, function(err, users) {
@@ -100,7 +135,7 @@ app.get('/users', function(req, res) {
   });
 });   
 
-app.post('/login', function(req, res){
+app.post('/login', urlencodedParser, function(req, res){
    User.findOne({
        username: req.body.username
    }, function(err, user){
@@ -108,13 +143,14 @@ app.post('/login', function(req, res){
        if(!user){
            res.send("Login failure");
        } else if(user) {
+           console.log(user);
            if(user.password != req.body.password){
                res.send('Login failure!');
            } else {
-               var token = jwt.sign(user, app.get('dinosaur'), {
-                   expiresInMinutes: 1440
-               });
-               console.log(token);
+               //var token = jwt.sign(user, app.get('dinosaur'), {
+                 //  expiresInMinutes: 1440
+               //});
+               console.log(user);
                res.send('success');
            }
        }

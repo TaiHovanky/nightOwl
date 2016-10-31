@@ -1,0 +1,110 @@
+<html>
+<head>
+	<title>nightOwl</title>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet"></link>
+<link href="https://fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet"></link>
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"></link>
+<style type="text/css">
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#mainPage {
+  background-color: #4A2849;
+}
+
+.jumbotron {
+  background-color: #6CBBA8!important;
+  color: #4A2849;
+  text-align: center;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.isCursive {
+  font-family: 'Lobster', cursive;
+}
+
+#plusText {
+  display:none;
+}
+
+.saveNotes {
+  color:white;
+  background-color: #93628F;
+  border: none;
+  font-family: 'Fjalla One', sans-serif;
+  font-size: 30px;
+  height: 40px;
+  margin-top: 0px;
+}
+
+
+
+form {
+    margin: 0 auto;
+}
+
+label {
+    color: white;
+    display: block;
+}
+
+input {
+  margin-top: 30px;
+  height: 30px;
+  border-radius: 4px;
+  background-color: #E0E0DD;
+  color: #07889D;
+  font-weight:bold;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+}
+
+#submit {
+    margin-top: 30px;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container" id="mainPage">
+  <div class="appTitle jumbotron">
+    <h1 id="nightOwl" class="isCursive">nightOwl</h1>
+    <h3 id="subtitle" class="isCursive">For those late night flights</h3>
+  </div> <!--end of appTitle div !-->
+   
+  <form class="notebook" action="" method="POST" enctype="multipart/form-data">
+  <fieldset>
+      <label >Username:  
+        <input type="text"  name="username">    
+        </input>
+      </label>
+      <label >Password:
+    <input type="text" name="password">    
+    </input>
+      </label>
+    <input type="submit" id="submit" class="saveNotes col-md-6 col-xs-4 col-md-offset-3 col-xs-offset-4" value="Submit" />
+  </fieldset>
+  </form> 
+  <section>
+      
+  </section>
+
+</div>
+</body>
+</html>
