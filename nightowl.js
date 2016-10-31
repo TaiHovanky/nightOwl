@@ -7,8 +7,9 @@ var nonce = require('nonce');
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 var releventDataArr = [];
-var mongoose = require('mongoose');
-var config = require('./config');
+//var mongoose = require('mongoose');
+//var config = require('./config');
+var db = require('./nightowlDb.js');
 var jwt = require('jsonwebtoken');
 var User = require('./models/user');
 var express = require('express');
@@ -21,8 +22,8 @@ var url = "https://api.yelp.com/v2/search/?"; // yelp api website
 var place = "";
 var fields = {};
 
-mongoose.connect(config.database); //connect to database
-app.set('dinosaur', config.secret); //secret variable
+//mongoose.connect(config.database); //connect to database
+//app.set('dinosaur', config.secret); //secret variable
 
 
 function yelpReq(loc, res){
@@ -77,23 +78,24 @@ app.post('/', function (req, res) {
         fields[field] = value;
         place = fields[field];
         res.redirect('/place');
-        
     });
     form.parse(req);
 });
 
-var account;
+//var account;
 
-app.get('/sampleuser', function(req, res){
-    var jaune = new User({
-        username:'arkos4life',
-        password: 'yuleavemepyrha'
+app.post('/sampleuser', urlencodedParser, function(req, res){
+    db.user.create(req.body).then(function(user){
+        res.send('Success! Your account has been created.');
+        console.log(user);
+    }, function(err){
+        res.status(400).send();
     });
-    jaune.save(function(err){
-        if(err) throw err;
-        console.log('user saved');
-        res.send(jaune.username);
-    });
+    //jaune.save(function(err){
+      //  if(err) throw err;
+      //  console.log('user saved');
+      //  res.send(jaune.username);
+    //});
 });
 
 app.get('/newuser', function(req,res){
@@ -101,61 +103,36 @@ app.get('/newuser', function(req,res){
 });
 
 app.post('/newuser', urlencodedParser, function(req, res){
-    User.findOne({
-        username: req.body.username
-    }, function(err, user){
-        if(err) throw err;
-        if(user){
-            res.send("Username is taken. Enter a new one.");
-        } else {
-            User.findOne({
-                password: req.body.password
-            }, function(error, password){
-                if (error) throw error;
-                if(password){
-                    res.send("Provide a different password");
-                } else {
-                    var noob = new User({
-                        username: req.body.username,
-                        password: req.body.password
-                    });
-                    noob.save(function(err){
-                        if(err) throw err;
-                        res.send("Account created!");
-                    });
-                }
-            });
+    db.user.findOrCreate({
+        where: {
+            username: req.body.username
         }
+    }).then(function(user){
+        res.json(user.toJSON());
+    }, function(error){
+        res.status(400).send();
     });
 });
 
 app.get('/users', function(req, res) {
-  User.find({}, function(err, users) {
-    res.json(users);
+  db.user.findAll().then(function(users){
+      console.log(users);
+      res.json(users.toJSON());
   });
 });   
 
-app.post('/login', urlencodedParser, function(req, res){
-   User.findOne({
-       username: req.body.username
-   }, function(err, user){
-       if(err) throw err;
-       if(!user){
-           res.send("Login failure");
-       } else if(user) {
-           console.log(user);
-           if(user.password != req.body.password){
-               res.send('Login failure!');
-           } else {
-               //var token = jwt.sign(user, app.get('dinosaur'), {
-                 //  expiresInMinutes: 1440
-               //});
-               console.log(user);
-               res.send('success');
-           }
-       }
-   });
-});
+//app.post('/login', urlencodedParser, function(req, res){
+  // db.user.findOne(
+      // where: {
+    //       username: req.body.username
+     //  }
+  // ).then(function(user){
+       //console.log(user.toJSON());
+    ///   res.send('logged in!');
+ //  }, function(error){
+ //      res.status(400).send();
+ //  });
+//});
 
 app.get('/place', function (req, res) {
     yelpReq(place, res);
