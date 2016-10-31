@@ -7,6 +7,7 @@ var nonce = require('nonce');
 var releventDataArr = [];
 var mongoose = require('mongoose');
 var config = require('./config');
+var jwt = require('jsonwebtoken');
 var User = require('./models/user');
 var express = require('express');
 var app = express();
@@ -80,12 +81,43 @@ app.post('/', function (req, res) {
 });
 
 var account;
+
+app.get('/sampleuser', function(req, res){
+    var jaune = new User({
+        username:'arkos4life',
+        password: 'yuleavemepyrha'
+    });
+    jaune.save(function(err){
+        if(err) throw err;
+        console.log('user saved');
+        res.send(jaune.username);
+    });
+})
+
+app.get('/users', function(req, res) {
+  User.find({}, function(err, users) {
+    res.json(users);
+  });
+});   
+
 app.post('/login', function(req, res){
-    var form = new formidable.IncomingForm();
-    //form.encoding = 'utf-8';
-    form.parse(req, function(err, fields){   
-        account = util.inspect(fields);  
-        res.end();
+   User.findOne({
+       username: req.body.username
+   }, function(err, user){
+       if(err) throw err;
+       if(!user){
+           res.send("Login failure");
+       } else if(user) {
+           if(user.password != req.body.password){
+               res.send('Login failure!');
+           } else {
+               var token = jwt.sign(user, app.get('dinosaur'), {
+                   expiresInMinutes: 1440
+               });
+               console.log(token);
+               res.send('success');
+           }
+       }
    });
 });
 

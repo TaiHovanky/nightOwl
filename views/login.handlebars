@@ -41,10 +41,6 @@
   display:none;
 }
 
-#adder:hover #plusText {
-  display:block;
-} 
-
 .saveNotes {
   color:white;
   background-color: #93628F;
@@ -55,13 +51,19 @@
   margin-top: 0px;
 }
 
+
+
+form {
+    margin: 0 auto;
+}
+
 label {
     color: white;
+    display: block;
 }
 
 input {
-  margin-top: 40px;
-  margin-bottom: 30px;
+  margin-top: 30px;
   height: 30px;
   border-radius: 4px;
   background-color: #E0E0DD;
@@ -69,6 +71,10 @@ input {
   font-weight:bold;
   font-family: 'Roboto', sans-serif;
   font-size: 18px;
+}
+
+#submit {
+    margin-top: 30px;
 }
 
 </style>
@@ -84,15 +90,15 @@ input {
    
   <form class="notebook" action="" method="POST" enctype="multipart/form-data">
   <fieldset>
-      <label>Username:  
-        <input type="text" class="col-md-12 col-xs-12 content" id="finder" name="username">    
+      <label >Username:  
+        <input type="text"  name="username">    
         </input>
       </label>
-      <label>Password:
-    <input type="text" class="col-md-12 col-xs-12 content" id="finder" name="password">    
+      <label >Password:
+    <input type="text" name="password">    
     </input>
       </label>
-    <input type="submit" id="search" class="saveNotes col-md-6 col-xs-4 col-md-offset-3 col-xs-offset-4" value="Submit" />
+    <input type="submit" id="submit" class="saveNotes col-md-6 col-xs-4 col-md-offset-3 col-xs-offset-4" value="Submit" />
   </fieldset>
   </form> 
   <section>
