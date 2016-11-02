@@ -12,7 +12,7 @@ var releventDataArr = [];
 //var config = require('./config');
 var db = require('./nightowlDb.js');
 var jwt = require('jsonwebtoken');
-var User = require('./models/userNightowl.js');
+//var User = require('./models/userNightowl.js');
 var express = require('express');
 var app = express();
 var exphbs = require('express-handlebars'); 
@@ -105,7 +105,7 @@ app.get('/newuser', function(req,res){
 
 });
 //urlencodedParser,
-app.post('/newuser', urlencodedParser, function(req, res){
+app.post('/newuser', function(req, res){
     //var form = {
         //email: req.body.email,
         //username: req.body.username,
@@ -133,7 +133,7 @@ app.post('/newuser', urlencodedParser, function(req, res){
             var fieldArr = field.split("=");
             resultObj[fieldArr[0]] = fieldArr[1];
         });
-        
+        console.log(resultObj);
         db.user.findOrCreate({
         where: {
             email: resultObj.email,
