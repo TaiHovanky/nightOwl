@@ -5,13 +5,14 @@ var qs = require('query-string');
 var oauthSignature = require('oauth-signature');
 var nonce = require('nonce');
 var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var releventDataArr = [];
+//
 //var mongoose = require('mongoose');
 //var config = require('./config');
 var db = require('./nightowlDb.js');
 var jwt = require('jsonwebtoken');
-var User = require('./models/user');
+var User = require('./models/userNightowl.js');
 var express = require('express');
 var app = express();
 var exphbs = require('express-handlebars'); 
@@ -99,19 +100,53 @@ app.post('/sampleuser', urlencodedParser, function(req, res){
 });
 
 app.get('/newuser', function(req,res){
-    res.render('newuser');
-});
+    //res.render('newuser');
+    res.sendFile(__dirname + '/views/nightowlLoginpage.html');
 
+});
+//urlencodedParser,
 app.post('/newuser', urlencodedParser, function(req, res){
-    db.user.findOrCreate({
-        where: {
-            username: req.body.username
-        }
-    }).then(function(user){
-        res.json(user.toJSON());
-    }, function(error){
-        res.status(400).send();
+    //var form = {
+        //email: req.body.email,
+        //username: req.body.username,
+        //password: req.body.password
+    //};
+    //var formData = qs.stringify(form);
+    //var formLength = formData.length;
+    //request({
+       // headers: {
+        //    'Content-Length': formLength,
+        //    'Content-Type': 'application/x-www-form-urlencoded'
+        //},
+        //url: 'http://localhost:4000/newuser',
+       // body: formData,
+       // method: 'POST'
+    //}, function(err, response, body){
+        var bodyStr = '';
+    req.on("data",function(chunk){
+        bodyStr += chunk.toString();
     });
+    req.on("end",function(){
+        var arr = bodyStr.split("&");
+        var resultObj = {};
+        arr.forEach(function(field){
+            var fieldArr = field.split("=");
+            resultObj[fieldArr[0]] = fieldArr[1];
+        });
+        
+        db.user.findOrCreate({
+        where: {
+            email: resultObj.email,
+            username: resultObj.username,
+            password: resultObj.password
+        }
+        }).then(function(user){
+            res.json(user.toJSON());
+        }, function(error){
+            res.status(400).send();
+        });
+    });
+    
 });
 
 app.get('/users', function(req, res) {
@@ -138,4 +173,8 @@ app.get('/place', function (req, res) {
     yelpReq(place, res);
 });
 
-app.listen(process.env.PORT || 4000);
+db.sequelize.sync().then(function(){
+    app.listen(4000, function(){
+        console.log('express listening on port 4000');
+    });
+});
