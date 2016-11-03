@@ -7,25 +7,19 @@ var nonce = require('nonce');
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var releventDataArr = [];
-//
-//var mongoose = require('mongoose');
-//var config = require('./config');
 var db = require('./nightowlDb.js');
+var User = require('./models/userNightowl.js');
 var jwt = require('jsonwebtoken');
-//var User = require('./models/userNightowl.js');
 var express = require('express');
 var app = express();
 var exphbs = require('express-handlebars'); 
 app.engine('handlebars', exphbs()); 
-//{defaultLayout: 'index'}
 app.set('view engine', 'handlebars');
+app.use(bodyParser.json()); 
 var url = "https://api.yelp.com/v2/search/?"; // yelp api website
 var place = "";
 var fields = {};
-
-//mongoose.connect(config.database); //connect to database
-//app.set('dinosaur', config.secret); //secret variable
-
+var resultObj = {};
 
 function yelpReq(loc, res){
     var httpMethod = 'GET';
@@ -83,29 +77,12 @@ app.post('/', function (req, res) {
     form.parse(req);
 });
 
-//var account;
-
-app.post('/sampleuser', urlencodedParser, function(req, res){
-    db.user.create(req.body).then(function(user){
-        res.send('Success! Your account has been created.');
-        console.log(user);
-    }, function(err){
-        res.status(400).send();
-    });
-    //jaune.save(function(err){
-      //  if(err) throw err;
-      //  console.log('user saved');
-      //  res.send(jaune.username);
-    //});
-});
-
 app.get('/newuser', function(req,res){
-    //res.render('newuser');
     res.sendFile(__dirname + '/views/nightowlLoginpage.html');
-
 });
-//urlencodedParser,
+
 app.post('/newuser', function(req, res){
+    console.log(req.body.email);
     //var form = {
         //email: req.body.email,
         //username: req.body.username,
@@ -127,21 +104,23 @@ app.post('/newuser', function(req, res){
         bodyStr += chunk.toString();
     });
     req.on("end",function(){
+        
         var arr = bodyStr.split("&");
-        var resultObj = {};
+        
         arr.forEach(function(field){
             var fieldArr = field.split("=");
             resultObj[fieldArr[0]] = fieldArr[1];
         });
         console.log(resultObj);
         db.user.findOrCreate({
+            
         where: {
             email: resultObj.email,
             username: resultObj.username,
             password: resultObj.password
         }
         }).then(function(user){
-            res.json(user.toJSON());
+            res.send("success!");
         }, function(error){
             res.status(400).send();
         });
@@ -173,7 +152,7 @@ app.get('/place', function (req, res) {
     yelpReq(place, res);
 });
 
-db.sequelize.sync().then(function(){
+db.sequelize.sync( {force: true}).then(function(){
     app.listen(4000, function(){
         console.log('express listening on port 4000');
     });
