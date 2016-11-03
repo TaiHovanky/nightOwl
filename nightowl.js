@@ -5,7 +5,8 @@ var qs = require('query-string');
 var oauthSignature = require('oauth-signature');
 var nonce = require('nonce');
 var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
+//var urlencodedParser = bodyParser.urlencoded({ extended: false });
+var _ = require('underscore');
 var releventDataArr = [];
 var db = require('./nightowlDb.js');
 var User = require('./models/userNightowl.js');
@@ -64,7 +65,34 @@ app.get('/', function (req, res) {
 });
 
 app.get('/login', function(req, res){
-    res.render('login');
+    res.sendFile(__dirname + '/views/nightowlSignIn.html');
+}); //need to use html page for this to work
+
+app.post('/login', function(req, res){
+    var bodyStr = '';
+    req.on('data', function(chunk){
+        bodyStr += chunk.toString();
+    });
+    req.on('end', function(){
+        var creds = {};
+        //res.send(bodyStr);
+        var arr = bodyStr.split('&');
+        arr.forEach(function(field){
+            var fieldArr = field.split("=");
+            creds[fieldArr[0]] = fieldArr[1];
+        });
+        
+        console.log(creds.username);
+        //db.user.findOne({
+         //   where: {
+               // username: creds[username]
+        //    }
+        //}).then(function(user){
+         //   res.send('logged in');
+        //    var match = _.pick(user, 'username');
+        //    console.log(match);
+        //});
+    });
 });
 
 app.post('/', function (req, res) {
@@ -82,31 +110,12 @@ app.get('/newuser', function(req,res){
 });
 
 app.post('/newuser', function(req, res){
-    console.log(req.body.email);
-    //var form = {
-        //email: req.body.email,
-        //username: req.body.username,
-        //password: req.body.password
-    //};
-    //var formData = qs.stringify(form);
-    //var formLength = formData.length;
-    //request({
-       // headers: {
-        //    'Content-Length': formLength,
-        //    'Content-Type': 'application/x-www-form-urlencoded'
-        //},
-        //url: 'http://localhost:4000/newuser',
-       // body: formData,
-       // method: 'POST'
-    //}, function(err, response, body){
         var bodyStr = '';
     req.on("data",function(chunk){
         bodyStr += chunk.toString();
     });
     req.on("end",function(){
-        
         var arr = bodyStr.split("&");
-        
         arr.forEach(function(field){
             var fieldArr = field.split("=");
             resultObj[fieldArr[0]] = fieldArr[1];
@@ -152,7 +161,7 @@ app.get('/place', function (req, res) {
     yelpReq(place, res);
 });
 
-db.sequelize.sync( {force: true}).then(function(){
+db.sequelize.sync({force: true}).then(function(){
     app.listen(4000, function(){
         console.log('express listening on port 4000');
     });
