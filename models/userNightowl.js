@@ -5,9 +5,10 @@
   //  username: String,
   //  password: String,
 //}));
+var crypto = require('crypto');
 
 module.exports = function (sequelize, DateTypes) {
-    var users = sequelize.define('users', {
+    return sequelize.define('users', {
         email: {
             type: DateTypes.STRING,
             allowNull: true,
@@ -18,13 +19,36 @@ module.exports = function (sequelize, DateTypes) {
             allowNull: false,
             unique: true,
         },
-        password: {
-            type: DateTypes.STRING,
+        salt: {
+            type: DateTypes.STRING
+        }, //salt adds random string to password so that the end hash is unique. best practice
+        password_hash: {
+            type: DateTypes.STRING
+        },
+        password: { //prevents password from being stored in database. Lets us override set functionality. 
+            type: DateTypes.VIRTUAL,
             allowNull: false,
-            unique: true
+            unique: true,
+            set: function(value){ //generate salt using crypto module
+                var salt = crypto.randomBytes(Math.ceil(10)).toString('hex').slice(0,10);
+                var hashedPassword = crypto.createHmac('sha512', salt);
+                hashedPassword.update(value);
+                var fullPassword = hashedPassword.digest('hex');
+                this.setDataValue('password', value);
+                this.setDataValue('salt', salt);
+                this.setDataValue('password_hash', fullPassword);
+            }
+        }
+    }, {
+        hooks: { //hooks used to convert email/username to lowercase before app checks db for matching user
+            beforeValidate: function(user, options){
+                if(typeof user.username ==="string"){
+                    user.username = user.username.toLowerCase();
+                }
+            } //can't use toLowerCase on numbers. need to check for string
         }
     });
-    return users;
+    
 }
 
 //took out the email validate and set define('users') so that 'users' matches db

@@ -83,15 +83,17 @@ app.post('/login', function(req, res){
         });
         
         console.log(creds.username);
-        //db.user.findOne({
-         //   where: {
-               // username: creds[username]
-        //    }
-        //}).then(function(user){
-         //   res.send('logged in');
-        //    var match = _.pick(user, 'username');
-        //    console.log(match);
-        //});
+        var username = creds.username;
+        var password = creds.password;
+        db.user.findOne({
+            where: {
+                username: creds[username]
+            }
+        }).then(function(user){
+            res.send('logged in');
+            //var match = _.pick(user, 'username');
+            console.log(user);
+        });
     });
 });
 
