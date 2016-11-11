@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 //var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var _ = require('underscore');
 var releventDataArr = [];
+var bcrypt = require('bcryptjs');
 var db = require('./nightowlDb.js');
 var User = require('./models/userNightowl.js');
 var jwt = require('jsonwebtoken');
@@ -87,11 +88,13 @@ app.post('/login', function(req, res){
         var password = creds.password;
         db.user.findOne({
             where: {
-                username: creds[username]
+                username: username
             }
         }).then(function(user){
+            if(!user || !bcrypt.compareSync(password, user.get('password_hash'))){ //validate password
+                return res.status(401); //auth is possible but failed
+            }
             res.send('logged in');
-            //var match = _.pick(user, 'username');
             console.log(user);
         });
     });
@@ -123,13 +126,13 @@ app.post('/newuser', function(req, res){
             resultObj[fieldArr[0]] = fieldArr[1];
         });
         console.log(resultObj);
-        db.user.findOrCreate({
+        db.user.create({ //creating the salt and hash works better with .create() than it does with findOrCreate() which didn't work'
             
-        where: {
+        
             email: resultObj.email,
             username: resultObj.username,
             password: resultObj.password
-        }
+        
         }).then(function(user){
             res.send("success!");
         }, function(error){
