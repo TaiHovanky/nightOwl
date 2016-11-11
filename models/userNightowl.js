@@ -5,7 +5,7 @@
   //  username: String,
   //  password: String,
 //}));
-var crypto = require('crypto');
+var bcrypt = require('bcryptjs');
 
 module.exports = function (sequelize, DateTypes) {
     return sequelize.define('users', {
@@ -30,13 +30,12 @@ module.exports = function (sequelize, DateTypes) {
             allowNull: false,
             unique: true,
             set: function(value){ //generate salt using crypto module
-                var salt = crypto.randomBytes(Math.ceil(10)).toString('hex').slice(0,10);
-                var hashedPassword = crypto.createHmac('sha512', salt);
-                hashedPassword.update(value);
-                var fullPassword = hashedPassword.digest('hex');
+                var salt = bcrypt.genSaltSync(10);
+                var hashedPassword = bcrypt.hashSync(value, salt);
+
                 this.setDataValue('password', value);
                 this.setDataValue('salt', salt);
-                this.setDataValue('password_hash', fullPassword);
+                this.setDataValue('password_hash', hashedPassword);
             }
         }
     }, {
