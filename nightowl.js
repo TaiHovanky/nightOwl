@@ -92,10 +92,16 @@ app.post('/login', function(req, res){
             }
         }).then(function(user){
             if(!user || !bcrypt.compareSync(password, user.get('password_hash'))){ //validate password
-                return res.status(401); //auth is possible but failed
+                res.status(401).send(); //auth is possible but failed
+            } //if login is successful, I want a token to be generated for the user
+            var token = user.generateToken('authentication');
+            if(token){
+                res.header('Auth', token).send('logged in');
+            } else {
+                res.status(401).send();
             }
-            res.send('logged in');
-            console.log(user);
+        }, function(){
+            res.status(401).send();
         });
     });
 });

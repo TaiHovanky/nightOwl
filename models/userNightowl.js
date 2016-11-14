@@ -6,6 +6,8 @@
   //  password: String,
 //}));
 var bcrypt = require('bcryptjs');
+var cryptojs = require('crypto-js');
+var jwt = require('jsonwebtoken');
 
 module.exports = function (sequelize, DateTypes) {
     return sequelize.define('users', {
@@ -45,6 +47,23 @@ module.exports = function (sequelize, DateTypes) {
                     user.username = user.username.toLowerCase();
                 }
             } //can't use toLowerCase on numbers. need to check for string
+        },
+        instanceMethods: {
+            generateToken: function (type){
+                if(typeof type !== 'string'){
+                    return undefined;
+                }
+                try {
+                    var stringData = JSON.stringify({id: this.get('id'), type: type});
+                    var encryptedData = cryptojs.AES.encrypt(stringData, 'abc123').toString();
+                    var token = jwt.sign({
+                        token: encryptedData
+                    }, 'tai123');
+                    return token; 
+                } catch(e){
+                    return undefined;
+                }
+            } //token hides user's data and is returned to user
         }
     });
     
