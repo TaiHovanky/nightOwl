@@ -10,7 +10,7 @@ var cryptojs = require('crypto-js');
 var jwt = require('jsonwebtoken');
 
 module.exports = function (sequelize, DateTypes) {
-    return sequelize.define('users', {
+    var user = sequelize.define('users', {
         email: {
             type: DateTypes.STRING,
             allowNull: true,
@@ -64,6 +64,26 @@ module.exports = function (sequelize, DateTypes) {
                     return undefined;
                 }
             } //token hides user's data and is returned to user
+        },
+        classMethods: {
+            findByToken: function(token){
+                return new Promise(function(resolve, reject){
+                    try {
+                        var decodedJWT = jwt.verify(token, 'tai123');  //verifies the validity of token and that it hasn't been modified'
+                        var bytes = cryptojs.AES.decrypt(decodedJWT.token, 'abc123'); //use cryptojs to decrypt the token
+                        var tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8)); //change bytes to an object that we can pull from
+                        user.findById(tokenData.id).then(function(user){
+                            if(user){
+                                resolve(user);
+                            }
+                        }, function(e){
+                            reject();
+                        });
+                    } catch(e){
+                        reject();
+                    }
+                });
+            } //used to decrypt the token and retrieve our data
         }
     });
     

@@ -12,6 +12,7 @@ var bcrypt = require('bcryptjs');
 var db = require('./nightowlDb.js');
 var User = require('./models/userNightowl.js');
 var jwt = require('jsonwebtoken');
+var middleware = require('./nightowlMiddleware.js')(db);
 var express = require('express');
 var app = express();
 var exphbs = require('express-handlebars'); 
@@ -132,13 +133,10 @@ app.post('/newuser', function(req, res){
             resultObj[fieldArr[0]] = fieldArr[1];
         });
         console.log(resultObj);
-        db.user.create({ //creating the salt and hash works better with .create() than it does with findOrCreate() which didn't work'
-            
-        
+        db.user.create({ //creating the salt and hash works better with .create() than it does with findOrCreate() which didn't work'       
             email: resultObj.email,
             username: resultObj.username,
             password: resultObj.password
-        
         }).then(function(user){
             res.send("success!");
         }, function(error){
@@ -168,9 +166,9 @@ app.get('/users', function(req, res) {
  //  });
 //});
 
-app.get('/place', function (req, res) {
+app.get('/place', middleware.requireAuthentication, function (req, res) {
     yelpReq(place, res);
-});
+}); //for now i'll require auth'
 
 db.sequelize.sync({force: true}).then(function(){
     app.listen(4000, function(){
