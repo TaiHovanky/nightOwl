@@ -62,7 +62,7 @@ function yelpReq(loc, res){
     
 }
 
-app.get('/', function (req, res) {
+app.get('/', middleware.requireAuthentication, function (req, res) {
     res.render('index');
 });
 
@@ -133,7 +133,8 @@ app.post('/newuser', function(req, res){
             resultObj[fieldArr[0]] = fieldArr[1];
         });
         console.log(resultObj);
-        db.user.create({ //creating the salt and hash works better with .create() than it does with findOrCreate() which didn't work'       
+        db.user.create({ //creating the salt and hash works better with create than it does with findOrCreate which didn't work  
+
             email: resultObj.email,
             username: resultObj.username,
             password: resultObj.password
@@ -153,20 +154,7 @@ app.get('/users', function(req, res) {
   });
 });   
 
-//app.post('/login', urlencodedParser, function(req, res){
-  // db.user.findOne(
-      // where: {
-    //       username: req.body.username
-     //  }
-  // ).then(function(user){
-       //console.log(user.toJSON());
-    ///   res.send('logged in!');
- //  }, function(error){
- //      res.status(400).send();
- //  });
-//});
-
-app.get('/place', middleware.requireAuthentication, function (req, res) {
+app.get('/place', function (req, res) {
     yelpReq(place, res);
 }); //for now i'll require auth'
 
